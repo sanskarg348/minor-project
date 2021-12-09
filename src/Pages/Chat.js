@@ -166,6 +166,11 @@ export default function Chat() {
           <div class="avatar">
             <img src={avatar} />
           </div>
+          <div class="btn-down">
+            <a class="link" href="">
+              RESTART CONVERSATION
+            </a>
+          </div>
         </div>
         <div class="chatbox">
           <div class="chatbox__support chatbox--active">
