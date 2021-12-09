@@ -46,8 +46,8 @@ export default function SignUp() {
     <div className="admin-login-parent-div">
       <ToastContainer />
       <div className="admin-login-form-div">
-        <h4>Sign Up To devNtech</h4>
-        <p>Enter your login details below</p>
+        <h4>Sign Up Here</h4>
+        <p>Enter your details below</p>
         <div className="admin-login-input-div">
           <label className="admin-login-input-label" for="email">
             Email

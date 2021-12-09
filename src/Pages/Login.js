@@ -56,7 +56,8 @@ export default function Login() {
     <div className="admin-login-parent-div">
       <ToastContainer />
       <div className="admin-login-form-div">
-        <h4>Login To devNtech</h4>
+      <img src="" className="mini-icon"></img>
+        <h4>Login To Chat</h4>
         <p>Enter your login details below</p>
         <div className="admin-login-input-div">
           <label className="admin-login-input-label" for="email">
