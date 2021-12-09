@@ -35,7 +35,7 @@ export default function Chat() {
     });
   };
   class Chatbox {
-    constructor(messagess) {
+    constructor(messagess = []) {
         this.args = {
             openButton: document.querySelector('.chatbox__button'),
             chatBox: document.querySelector('.chatbox__support'),
