@@ -170,7 +170,7 @@ export default function Chat() {
             <a class="link" href="">
               RESTART CONVERSATION
             </a>
-          </div>gfb
+          </div>
         </div>
         <div class="chatbox">
           <div class="chatbox__support chatbox--active">
