@@ -3,7 +3,7 @@ import { Form } from "react-bootstrap";
 import firebase from "firebase";
 import { reactLocalStorage } from "reactjs-localstorage";
 import { useHistory } from "react-router-dom";
-
+import avatar from "../Images/avatar.png"
 import "./Login.css";
 import { toast, ToastContainer } from "react-toastify";
 
@@ -56,7 +56,7 @@ export default function Login() {
     <div className="admin-login-parent-div">
       <ToastContainer />
       <div className="admin-login-form-div">
-      <img src="" className="mini-icon"></img>
+      <img src={avatar} className="mini-icon"></img>
         <h4>Login To Chat</h4>
         <p>Enter your login details below</p>
         <div className="admin-login-input-div">

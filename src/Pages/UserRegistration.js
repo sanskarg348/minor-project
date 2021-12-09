@@ -3,8 +3,10 @@ import { Form } from "react-bootstrap";
 import firebase from "firebase";
 import { reactLocalStorage } from "reactjs-localstorage";
 import { useHistory } from "react-router-dom";
+import avatar from "../Images/avatar.png"
 
 import "./Login.css";
+import "./UserRegistration.css";
 import { toast, ToastContainer } from "react-toastify";
 
 export default function UserRegistration() {
@@ -38,33 +40,25 @@ export default function UserRegistration() {
   return (
     <div className="admin-login-parent-div">
       <ToastContainer />
-      <div className="admin-login-form-div">
+      <div className="admin-login-form-div-2">
+      <img src={avatar} className="mini-icon"></img>
+
         <h4>Register</h4>
         <p>Enter your details below</p>
         <div className="admin-login-input-div">
-          <label className="admin-login-input-label" for="email">
-            Name
-          </label>
+          
           <input
             type="text"
             name="name"
             id="name"
+            placeholder="Enter Your Name"
             value={credentials.name}
             onChange={handleChange}
             className="admin-login-input"
           ></input>
         </div>
-        <Form.Check
-          type="checkbox"
-          className="password-check"
-          value={showPassword}
-          onChange={() => {
-            setShowPassword((prev) => !prev);
-          }}
-          label="Show Password"
-        />
         <button onClick={handleSignIn} className="admin-login-btn">
-          Login
+          Proceed
         </button>
       </div>
     </div>
