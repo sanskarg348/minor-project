@@ -3,10 +3,13 @@ import firebase from "firebase";
 import "./Chat.css";
 import { toast } from "react-toastify";
 import avatar from "../Images/avatar.png"
+import { useHistory } from "react-router-dom";
+import { ToastContainer } from "react-bootstrap";
 
 export default function Chat() {
   const db = firebase.firestore();
   const auth = firebase.auth();
+  const history = useHistory();
   const [messages, setMessages] = useState([]);
   const [name, setName] = useState("");
 
@@ -148,10 +151,20 @@ export default function Chat() {
               console.log("Error");
           })
       })
-  })
+  });
+
+  const logOut = () => {
+    const auth = firebase.auth();
+    auth.signOut().then(() => {
+      history.push("/");
+    }).catch((error) => {
+      toast.error("An error occurred");
+    })
+  }
 
   return (
     <div>
+    <ToastContainer />
       <div class="chat-main-container">
         <div class="right-side">
           <div class="details">
@@ -167,9 +180,9 @@ export default function Chat() {
             <img src={avatar} />
           </div>
           <div class="btn-down">
-            <a class="link" href="">
-              RESTART CONVERSATION
-            </a>
+            <button style={{border: "none", background: "transparent"}} onClick={logOut} class="link" href="">
+              LOG OUT
+            </button>
           </div>
         </div>
         <div class="chatbox">
