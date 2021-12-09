@@ -52,26 +52,22 @@ export default function SignUp() {
         <h4>Sign Up Here</h4>
         <p>Enter your details below</p>
         <div className="admin-login-input-div">
-          <label className="admin-login-input-label" for="email">
-            Email
-          </label>
           <input
             type="text"
             name="email"
             id="email"
+            placeholder="E-Mail"
             value={credentials.email}
             onChange={handleChange}
             className="admin-login-input"
           ></input>
         </div>
         <div className="admin-login-input-div">
-          <label className="admin-login-input-label" for="email">
-            Password
-          </label>
           <input
             type={showPassword ? "text" : "password"}
             name="password"
             id="password"
+            placeholder="Password"
             value={credentials.password}
             onChange={handleChange}
             className="admin-login-input"
