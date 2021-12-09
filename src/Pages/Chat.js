@@ -2,17 +2,16 @@ import React, { useState, useEffect } from "react";
 import firebase from "firebase";
 import "./Chat.css";
 import { toast } from "react-toastify";
+import avatar from "../Images/avatar.png"
 
 export default function Chat() {
   const db = firebase.firestore();
   const auth = firebase.auth();
   const [messages, setMessages] = useState([]);
+  const [name, setName] = useState("");
 
   useEffect(() => {
       getChat();
-      const chatbox = new Chatbox();
-      chatbox.messages = messages;
-      chatbox.display();
   }, [])
 
   const getChat = () => {
@@ -22,11 +21,13 @@ export default function Chat() {
       db.collection("Users")
         .doc(uid)
         .get()
-        .then((snapshot) => {
+        .then(async (snapshot) => {
+          const nm = snapshot.data().name;
+          setName(nm);
           const chats = snapshot.data().chat;
-          setMessages(chats);
-          console.log(chats);
-
+          setMessages(chats); 
+          const chatbox = new Chatbox(chats);
+          chatbox.display(); 
         })
         .catch((error) => {
           toast.error("ERROR");
@@ -34,15 +35,17 @@ export default function Chat() {
     });
   };
   class Chatbox {
-    constructor() {
+    constructor(messagess) {
         this.args = {
             openButton: document.querySelector('.chatbox__button'),
             chatBox: document.querySelector('.chatbox__support'),
             sendButton: document.querySelector('.send__button')
         }
-
         this.state = false;
-        this.messages = [];
+        this.messages = messagess;
+        console.log(messagess);
+        this.updateChatText(this.args.chatBox);
+
     }
 
     display() {
@@ -99,7 +102,6 @@ export default function Chat() {
         )
           .then((r) => r.json())
           .then((r) => {
-            console.log(r);
             let msg2 = {name: 'Sam', message: r.generated_text};
             addMessage(r.generated_text, 'Sam');
             this.messages.push(msg2);
@@ -116,7 +118,7 @@ export default function Chat() {
     updateChatText(chatbox) {
         var html = '';
         this.messages.slice().reverse().forEach(function(item, index) {
-            if (item.name === "Sam")
+            if (item.name === "Sam" || item.sender == 'Sam')
             {
                 html += '<div class="messages__item messages__item--visitor">' + item.message + '</div>'
             }
@@ -125,7 +127,7 @@ export default function Chat() {
                 html += '<div class="messages__item messages__item--operator">' + item.message + '</div>'
             }
           });
-
+        console.log(chatbox)
         const chatmessage = chatbox.querySelector('.chatbox__messages');
         chatmessage.innerHTML = html;
     }
@@ -137,7 +139,6 @@ export default function Chat() {
   const addMessage = ((message, sender) => {
       auth.onAuthStateChanged((user) => {
           const uid = user.uid;
-          console.log(uid);
           db.collection("Users").doc(uid).update({
               chat: firebase.firestore.FieldValue.arrayUnion({message, sender})
           }).then(() => {
@@ -159,16 +160,11 @@ export default function Chat() {
             <br />
             <span class="sub-details">LVL 4 | 555 XP | Chatty</span>
             <br />
-            <span class="sub-text">Frends with DIVYANSHU SHARMA</span>
+            <span class="sub-text">Frends with {name && name}</span>
             <br />
           </div>
           <div class="avatar">
-            <img src="./images/avatar.png" />
-          </div>
-          <div class="btn-down">
-            <a class="link" href="">
-              RESTART CONVERSATION
-            </a>
+            <img src={avatar} />
           </div>
         </div>
         <div class="chatbox">
@@ -188,13 +184,6 @@ export default function Chat() {
               </div>
             </div>{" "}
             <div class="chatbox__messages">
-            {messages && messages.map((msg) => {
-              if(msg.sender==="Sam") {
-                return <div className="messages__item messages__item--visitor">{msg.message}</div>
-              } else {
-                return <div className="messages__item messages__item--operator">{msg.message}</div>
-              }
-            })}
               <div class="inner_msg"></div>
             </div>
             <div class="chatbox__footer">

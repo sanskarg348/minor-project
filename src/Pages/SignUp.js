@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Form } from "react-bootstrap";
 import firebase from "firebase";
 import { reactLocalStorage } from "reactjs-localstorage";
-import { useHistory } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import avatar from "../Images/avatar.png"
 
 
@@ -89,6 +89,8 @@ export default function SignUp() {
         <button onClick={handleSignUp} className="admin-login-btn">
           Sign Up
         </button>
+        <p style={{marginTop: "12px", color: "rgba(0,0,0,0.650)", fontSize: "12px"}}>If you're an existing user, <Link to="/">Sign In</Link> instead</p>
+
       </div>
     </div>
   );
