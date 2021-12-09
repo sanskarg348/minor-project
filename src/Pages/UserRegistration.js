@@ -28,14 +28,18 @@ export default function UserRegistration() {
 
   const handleSignIn = (event) => {
     event.preventDefault();
-    db.collection("Users")
-      .add({ name: credentials.name, chat: [] })
+    const auth = firebase.auth();
+    auth.onAuthStateChanged((user) => {
+      const uid = user.uid;
+      db.collection("Users").doc(uid)
+      .set({ name: credentials.name, chat: [] })
       .then(() => {
         history.push("/chat");
       })
       .catch((err) => {
         toast.error("ERROR");
       });
+    })
   };
   return (
     <div className="admin-login-parent-div">

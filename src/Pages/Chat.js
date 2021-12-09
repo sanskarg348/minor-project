@@ -10,6 +10,9 @@ export default function Chat() {
 
   useEffect(() => {
       getChat();
+      const chatbox = new Chatbox();
+      chatbox.messages = messages;
+      chatbox.display();
   }, [])
 
   const getChat = () => {
@@ -22,24 +25,126 @@ export default function Chat() {
         .then((snapshot) => {
           const chats = snapshot.data().chat;
           setMessages(chats);
+          console.log(chats);
+
         })
         .catch((error) => {
           toast.error("ERROR");
         });
     });
   };
+  class Chatbox {
+    constructor() {
+        this.args = {
+            openButton: document.querySelector('.chatbox__button'),
+            chatBox: document.querySelector('.chatbox__support'),
+            sendButton: document.querySelector('.send__button')
+        }
+
+        this.state = false;
+        this.messages = [];
+    }
+
+    display() {
+        const {openButton, chatBox, sendButton} = this.args;
+
+        openButton.addEventListener('click', () => this.toggleState(chatBox))
+
+        sendButton.addEventListener('click', () => this.onSendButton(chatBox))
+
+        const node = chatBox.querySelector('input');
+        node.addEventListener("keyup", ({key}) => {
+            if (key === "Enter") {
+                this.onSendButton(chatBox)
+            }
+        })
+    }
+
+    toggleState(chatbox) {
+        this.state = !this.state;
+
+        // show or hides the box
+        if(this.state) {
+            chatbox.classList.add('chatbox--active')
+        } else {
+            chatbox.classList.remove('chatbox--active')
+        }
+    }
+
+    onSendButton(chatbox) {
+        var textField = chatbox.querySelector('input');
+        let text1 = textField.value
+        if (text1 === "") {
+            return;
+        }
+
+        let msg1 = { name: "divyanshu", message: text1};
+        addMessage(text1, "divyanshu");
+        this.messages.push(msg1);
+
+        fetch(
+          "https://api-inference.huggingface.co/models/facebook/blenderbot-400M-distill",
+          {
+            method: "POST",
+            body: JSON.stringify({
+              inputs: {
+                text: text1,
+              },
+            }),
+            mode: "cors",
+            headers: {
+              Authorization: "Bearer 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",
+            },
+          }
+        )
+          .then((r) => r.json())
+          .then((r) => {
+            console.log(r);
+            let msg2 = {name: 'Sam', message: r.generated_text};
+            addMessage(r.generated_text, 'Sam');
+            this.messages.push(msg2);
+            this.updateChatText(chatbox);
+            textField.value = "";
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+            this.updateChatText(chatbox);
+            textField.value = "";
+          });
+    }
+
+    updateChatText(chatbox) {
+        var html = '';
+        this.messages.slice().reverse().forEach(function(item, index) {
+            if (item.name === "Sam")
+            {
+                html += '<div class="messages__item messages__item--visitor">' + item.message + '</div>'
+            }
+            else
+            {
+                html += '<div class="messages__item messages__item--operator">' + item.message + '</div>'
+            }
+          });
+
+        const chatmessage = chatbox.querySelector('.chatbox__messages');
+        chatmessage.innerHTML = html;
+    }
+}
+
+
+
 
   const addMessage = ((message, sender) => {
       auth.onAuthStateChanged((user) => {
           const uid = user.uid;
+          console.log(uid);
           db.collection("Users").doc(uid).update({
               chat: firebase.firestore.FieldValue.arrayUnion({message, sender})
           }).then(() => {
-                setMessages((prev) => {
-                    return [...prev, {sender: sender, message: message}]
-                })
+                console.log("Message Added");
           }).catch(err => {
               toast.error("ERROR");
+              console.log("Error");
           })
       })
   })
@@ -82,8 +187,14 @@ export default function Chat() {
                 </p>
               </div>
             </div>{" "}
-            -->
             <div class="chatbox__messages">
+            {messages && messages.map((msg) => {
+              if(msg.sender==="Sam") {
+                return <div className="messages__item messages__item--visitor">{msg.message}</div>
+              } else {
+                return <div className="messages__item messages__item--operator">{msg.message}</div>
+              }
+            })}
               <div class="inner_msg"></div>
             </div>
             <div class="chatbox__footer">
